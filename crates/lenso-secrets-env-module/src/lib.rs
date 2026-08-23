@@ -2,14 +2,13 @@
 
 use std::{collections::BTreeMap, error::Error, fmt, rc::Rc};
 
-use futures::future::LocalBoxFuture;
 use lenso_capability_secrets::{
-    ResolveError, ResolveRequest, ResolveResponse, SecretsEndpoint, SecretsInvocationError,
-    SecretsProvider,
+    ResolveError, ResolveRequest, ResolveResponse, Secrets, SecretsEndpoint,
+    SecretsInvocationError, SecretsProvider,
 };
 use lenso_kernel::{
-    InvocationContext, ModuleFuture, ModuleLifecycle, NativeRequestEndpoint, PrepareContext,
-    RuntimeFailure,
+    InvocationContext, ModuleFuture, ModuleLifecycle, NativeRequestEndpoint, NativeRequestFuture,
+    PrepareContext, RuntimeFailure,
 };
 use lenso_native_adapter::{NativeModuleFactory, NativeModuleFactoryContext, NativeModuleInstance};
 
@@ -252,7 +251,7 @@ impl SecretsProvider for EnvSecretsProvider {
         &self,
         _context: InvocationContext,
         request: ResolveRequest,
-    ) -> LocalBoxFuture<'static, Result<ResolveResponse, SecretsInvocationError>> {
+    ) -> NativeRequestFuture<Secrets> {
         let result = if !valid_reference(&request.reference) {
             Err(SecretsInvocationError::Domain(
                 ResolveError::InvalidReference,
@@ -265,6 +264,11 @@ impl SecretsProvider for EnvSecretsProvider {
             self.read(&request.reference)
                 .map(|value| ResolveResponse { value })
                 .map_err(SecretsInvocationError::Runtime)
+        };
+        let result = match result {
+            Ok(response) => Ok(Ok(response)),
+            Err(SecretsInvocationError::Domain(error)) => Ok(Err(error)),
+            Err(SecretsInvocationError::Runtime(error)) => Err(error),
         };
         Box::pin(futures::future::ready(result))
     }

@@ -13,6 +13,10 @@ secret lifecycle, a global secret registry, or automatic Provider fallback.
 Secret values never belong in an App Plan, Module configuration, diagnostics,
 errors, or `Debug` output.
 
+The generated TypeScript binding imports `@lenso/contract-runtime`.
+TypeScript consumers must declare a compatible
+`@lenso/contract-runtime@^0.1.0` dependency.
+
 ## First useful workflow
 
 The App author binds a consumer's `lenso.secrets@1` requirement to one Env

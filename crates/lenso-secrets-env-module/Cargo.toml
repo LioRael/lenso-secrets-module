@@ -11,7 +11,7 @@ rust-version.workspace = true
 [dependencies]
 futures.workspace = true
 lenso-capability-secrets = { version = "0.1.0", path = "../lenso-capability-secrets" }
-lenso-kernel = "0.1.1"
+lenso-kernel = "0.1.4"
 lenso-native-adapter = "0.1.1"
 serde.workspace = true
 serde_json.workspace = true
