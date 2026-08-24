@@ -13,8 +13,8 @@ use lenso_native_adapter::{
 };
 
 use super::{
-    EnvSecretsConfig, EnvSecretsConfigError, EnvSecretsFactory, PACKAGE_ID, SecretSource,
-    SourceUnavailable,
+    EnvSecretsConfig, EnvSecretsConfigError, EnvSecretsFactory, MODULE_DESCRIPTOR_JSON, PACKAGE_ID,
+    SecretSource, SourceUnavailable,
 };
 
 const CALLER_PACKAGE_ID: &str = "test.secrets-caller";
@@ -66,6 +66,28 @@ fn config() -> EnvSecretsConfig {
     EnvSecretsConfig::new()
         .with_reference("database/url", "APP_DATABASE_URL")
         .expect("test mapping should be valid")
+}
+
+#[test]
+fn package_descriptor_and_linked_factory_are_derived_from_the_module() {
+    let descriptor: serde_json::Value =
+        serde_json::from_str(MODULE_DESCRIPTOR_JSON).expect("descriptor should be valid JSON");
+    assert_eq!(descriptor["package_id"], PACKAGE_ID);
+    assert_eq!(
+        descriptor["provided_capabilities"][0]["capability_id"],
+        CAPABILITY_ID
+    );
+    assert_eq!(
+        descriptor["configuration_schema"]["required"],
+        serde_json::json!(["references"])
+    );
+
+    let linked = NativeModuleRegistry::new()
+        .with_linked_factories()
+        .factories()
+        .filter(|factory| factory.package_id() == PACKAGE_ID)
+        .count();
+    assert_eq!(linked, 1);
 }
 
 fn plan(config: &EnvSecretsConfig) -> ResolvedAppPlan {

@@ -12,12 +12,6 @@ use lenso_kernel::{
 };
 use lenso_native_adapter::{NativeModuleFactory, NativeModuleFactoryContext, NativeModuleInstance};
 
-/// Package identity for the linked Rust Env Secrets Module.
-pub const PACKAGE_ID: &str = "lenso.secrets.env";
-
-/// Exact Cargo package version linked into the host.
-pub const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
-
 /// Maximum supported logical secret-reference length.
 pub const MAX_REFERENCE_LENGTH: usize = 256;
 
@@ -180,25 +174,47 @@ impl NativeModuleFactory for EnvSecretsFactory {
         &self,
         context: NativeModuleFactoryContext<'_>,
     ) -> Result<NativeModuleInstance, RuntimeFailure> {
-        let config =
-            serde_json::from_str::<EnvSecretsConfig>(context.configuration()).map_err(|error| {
-                RuntimeFailure::InvalidResolvedPlan {
-                    detail: format!("Env Secrets Module configuration is invalid: {error}"),
-                }
-            })?;
-        config
-            .validate()
-            .map_err(|error| RuntimeFailure::InvalidResolvedPlan {
-                detail: format!("Env Secrets Module configuration is invalid: {error}"),
-            })?;
-        let provider = EnvSecretsProvider::new(config, self.source.clone());
-        let endpoint =
-            Rc::new(SecretsEndpoint::new(provider.clone())) as Rc<dyn NativeRequestEndpoint>;
-        Ok(NativeModuleInstance::with_lifecycle(
-            vec![endpoint],
-            EnvSecretsLifecycle { provider },
-        ))
+        instantiate_with_source(context, self.source.clone())
     }
+}
+
+/// Instantiates the ordinary process-environment-backed Module.
+#[lenso_native_adapter::module(
+    descriptor = r#"{"provided_capabilities":[{"capability_id":"lenso.secrets@1","descriptor_version":"1.0.0","operations":["resolve"],"operation_kinds":{},"default_admission":{"queue_capacity":2,"max_concurrency":1},"operation_admissions":{},"event_admission":null,"cross_lane_transfer":false}],"required_capabilities":[]}"#,
+    configuration_schema = "config.schema.json"
+)]
+fn instantiate(
+    context: NativeModuleFactoryContext<'_>,
+) -> Result<NativeModuleInstance, RuntimeFailure> {
+    instantiate_with_source(context, Rc::new(ProcessEnvironment))
+}
+
+fn instantiate_with_source(
+    context: NativeModuleFactoryContext<'_>,
+    source: Rc<dyn SecretSource>,
+) -> Result<NativeModuleInstance, RuntimeFailure> {
+    if context.entrypoint() != "default" {
+        return Err(RuntimeFailure::InvalidResolvedPlan {
+            detail: "unsupported Env Secrets Module entrypoint".to_owned(),
+        });
+    }
+    let config =
+        serde_json::from_str::<EnvSecretsConfig>(context.configuration()).map_err(|error| {
+            RuntimeFailure::InvalidResolvedPlan {
+                detail: format!("Env Secrets Module configuration is invalid: {error}"),
+            }
+        })?;
+    config
+        .validate()
+        .map_err(|error| RuntimeFailure::InvalidResolvedPlan {
+            detail: format!("Env Secrets Module configuration is invalid: {error}"),
+        })?;
+    let provider = EnvSecretsProvider::new(config, source);
+    let endpoint = Rc::new(SecretsEndpoint::new(provider.clone())) as Rc<dyn NativeRequestEndpoint>;
+    Ok(NativeModuleInstance::with_lifecycle(
+        vec![endpoint],
+        EnvSecretsLifecycle { provider },
+    ))
 }
 
 #[derive(Clone)]
