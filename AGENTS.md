@@ -13,8 +13,9 @@ Providers, ambient environment scanning, Auth policy, business authorization,
 or persistence ownership here. Missing configured sources fail preparation;
 runtime source loss remains a truthful Runtime Failure.
 
-The Capability descriptor is authoritative. Regenerate Rust and TypeScript
-bindings through `lenso-contract-codegen`; never hand-edit generated files.
+The Capability descriptor is authoritative. This native Capability crate owns
+only its Rust projection; the supported Bun SDK owns the TypeScript projection.
+Regenerate both through `lenso-contract-codegen`; never hand-edit them.
 
 Create task worktrees with `wt switch --create`. Run Cargo through
 `/Users/leosouthey/Projects/framework/.lenso-tools/bin/lenso-cargo` when
