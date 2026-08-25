@@ -144,6 +144,9 @@ pub trait __LensoIntoSecretsResolveResult {
 impl __LensoIntoSecretsResolveResult for Result<ResolveResponse, ResolveError> {
     fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> { Ok(self) }
 }
+impl __LensoIntoSecretsResolveResult for Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> { self }
+}
 impl __LensoIntoSecretsResolveResult for Result<ResolveResponse, lenso_module_authoring::ModuleError<ResolveError, RuntimeFailure>> {
     fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> {
         match self {
