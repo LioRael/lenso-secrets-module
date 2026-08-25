@@ -15,7 +15,7 @@ package-id = "lenso.secrets.env"
 futures.workspace = true
 lenso-capability-secrets = { version = "0.1.0", path = "../lenso-capability-secrets" }
 lenso-kernel = "0.1.4"
-lenso-native-adapter = { git = "https://github.com/LioRael/lenso-runtime-rust.git", rev = "3a6282e63397a0b4270c1b7eb3bae48ebe1cf94e" }
+lenso-native-adapter = { git = "https://github.com/LioRael/lenso-runtime-rust.git", rev = "08822e72d25cc4ffd5a0267b22c053aa3080d96d" }
 serde.workspace = true
 serde_json.workspace = true
 
