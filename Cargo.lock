@@ -82,7 +82,7 @@ checksum = "9fb9654ba8355388abeb8dcb4fc62f511300867002afc858860463bdd9fe0c44"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.3",
+ "syn 3.0.4",
 ]
 
 [[package]]
@@ -147,9 +147,9 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "lenso-app-plan"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34dd8903d3180427d61784c9e07b229196cc6cb21618a83673153150398211b7"
+checksum = "923bf0bdbf82beee1f37a6f02ae087630b69cd007e19844d116c552fbf36f0a9"
 dependencies = [
  "serde",
  "serde_json",
@@ -171,7 +171,7 @@ dependencies = [
 [[package]]
 name = "lenso-contract-authoring"
 version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-protocols?rev=9a594895137b45a429876b34d8b7cfff008aa335#9a594895137b45a429876b34d8b7cfff008aa335"
+source = "git+https://github.com/LioRael/lenso-protocols?rev=1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0#1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0"
 dependencies = [
  "lenso-contract-authoring-macros",
  "schemars",
@@ -181,7 +181,7 @@ dependencies = [
 [[package]]
 name = "lenso-contract-authoring-macros"
 version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-protocols?rev=9a594895137b45a429876b34d8b7cfff008aa335#9a594895137b45a429876b34d8b7cfff008aa335"
+source = "git+https://github.com/LioRael/lenso-protocols?rev=1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0#1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -191,7 +191,7 @@ dependencies = [
 [[package]]
 name = "lenso-contract-codegen"
 version = "0.6.2"
-source = "git+https://github.com/LioRael/lenso-protocols?rev=9a594895137b45a429876b34d8b7cfff008aa335#9a594895137b45a429876b34d8b7cfff008aa335"
+source = "git+https://github.com/LioRael/lenso-protocols?rev=1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0#1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0"
 dependencies = [
  "lenso-contract-authoring",
  "semver",
@@ -200,9 +200,9 @@ dependencies = [
 
 [[package]]
 name = "lenso-contract-runtime"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb27de491e87d8bce223fade970fedc8348326e395640ee3d260b7a569b9e02d"
+checksum = "9f56bfb2aaaa51297547762092ff859e774908a05737c4d7d44a2064e8a29c83"
 dependencies = [
  "base64",
  "bytes",
@@ -212,9 +212,9 @@ dependencies = [
 
 [[package]]
 name = "lenso-kernel"
-version = "0.1.9"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d66c49832b0b5e825b4f746331a74fa943392db27bbe569365422dd468260fd"
+checksum = "4fde9a2f8cd4851b9b4a8288640e838690b4999e34f97d18e5045304fb52284b"
 dependencies = [
  "futures",
  "lenso-app-plan",
@@ -223,12 +223,12 @@ dependencies = [
 [[package]]
 name = "lenso-module-authoring"
 version = "0.1.1"
-source = "git+https://github.com/LioRael/lenso-protocols?rev=9a594895137b45a429876b34d8b7cfff008aa335#9a594895137b45a429876b34d8b7cfff008aa335"
+source = "git+https://github.com/LioRael/lenso-protocols?rev=1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0#1424ffe25f05c0d3aaf746fb7fd66b26b9f803e0"
 
 [[package]]
 name = "lenso-native-adapter"
-version = "0.2.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=c56e4a01d14704eeae26e2121dbd87dbf380b1d3#c56e4a01d14704eeae26e2121dbd87dbf380b1d3"
+ version = "0.2.1"
+ source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=0685896b182f2dcb7afd103b9cf578790d231e0a#0685896b182f2dcb7afd103b9cf578790d231e0a"
 dependencies = [
  "futures",
  "inventory",
@@ -240,8 +240,8 @@ dependencies = [
 
 [[package]]
 name = "lenso-native-adapter-macros"
-version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=c56e4a01d14704eeae26e2121dbd87dbf380b1d3#c56e4a01d14704eeae26e2121dbd87dbf380b1d3"
+ version = "0.1.1"
+ source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=0685896b182f2dcb7afd103b9cf578790d231e0a#0685896b182f2dcb7afd103b9cf578790d231e0a"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -320,7 +320,7 @@ checksum = "92ecd8964f8453721699a1ed72037b0db49ce2f5a5138486ee89bed6f67cdf3a"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.3",
+ "syn 3.0.4",
 ]
 
 [[package]]
@@ -351,7 +351,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde_derive_internals",
- "syn 3.0.3",
+ "syn 3.0.4",
 ]
 
 [[package]]
@@ -387,7 +387,7 @@ checksum = "e7a5d71263a5a7d47b41f6b3f06ba276f10cc18b0931f1799f710578e2309348"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.3",
+ "syn 3.0.4",
 ]
 
 [[package]]
@@ -398,7 +398,7 @@ checksum = "f852137cce035d6a4df67ccce505ff6b3e9fd3a10e3e52b24dc71e650bb1a9bd"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 3.0.3",
+ "syn 3.0.4",
 ]
 
 [[package]]
@@ -443,9 +443,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "3.0.3"
+version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53e9bae58849f64dfa4f5d5ae372c8341f7305f82a3868709269343628b659a3"
+checksum = "e6275cddf4610d1775e6d1fe9469b2e77d0f39fd98fb7450901b821e0c53649f"
 dependencies = [
  "proc-macro2",
  "quote",
