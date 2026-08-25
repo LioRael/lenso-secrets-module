@@ -141,9 +141,9 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "lenso-app-plan"
-version = "0.1.0"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43afd42e0158e98fefded2fca95e6e3e461251b667afb11cea1422e9b6d56a8e"
+checksum = "923bf0bdbf82beee1f37a6f02ae087630b69cd007e19844d116c552fbf36f0a9"
 dependencies = [
  "serde",
  "serde_json",
@@ -185,9 +185,9 @@ dependencies = [
 
 [[package]]
 name = "lenso-kernel"
-version = "0.1.4"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13a59515bef679b5927f49b45451b3d509fbde58a942c509f83abbe9bc854e4c"
+checksum = "9e99aa70408b0a93ce043fad0b00e1c831137a8b876fa3206d9814af0c1a4ba3"
 dependencies = [
  "futures",
  "lenso-app-plan",
@@ -195,8 +195,8 @@ dependencies = [
 
 [[package]]
 name = "lenso-native-adapter"
-version = "0.1.2"
-source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=12fd7934ddc72d9d32d647c931be3de00b6fe334#12fd7934ddc72d9d32d647c931be3de00b6fe334"
+version = "0.2.1"
+source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=1f79f3b4911a8d33323eb265668babcda7b22f34#1f79f3b4911a8d33323eb265668babcda7b22f34"
 dependencies = [
  "futures",
  "inventory",
@@ -208,8 +208,8 @@ dependencies = [
 
 [[package]]
 name = "lenso-native-adapter-macros"
-version = "0.1.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=12fd7934ddc72d9d32d647c931be3de00b6fe334#12fd7934ddc72d9d32d647c931be3de00b6fe334"
+version = "0.1.1"
+source = "git+https://github.com/LioRael/lenso-runtime-rust.git?rev=1f79f3b4911a8d33323eb265668babcda7b22f34#1f79f3b4911a8d33323eb265668babcda7b22f34"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
