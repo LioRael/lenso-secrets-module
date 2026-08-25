@@ -3,12 +3,25 @@ use std::{fmt, rc::Rc};
 use futures::future::LocalBoxFuture;
 use lenso_kernel::{InvocationContext, ModuleDependencies, NativeRequestEndpoint, NativeRequestFuture, NativeRequestHandle, RequestCapability, RuntimeFailure};
 
+use lenso_module_authoring::{BoundCapabilityClient, CapabilityClient, CapabilityClientMany};
 pub const CAPABILITY_ID: &str = "lenso.secrets@1";
 pub const DESCRIPTOR_VERSION: &str = "1.0.0";
 pub const PORTABLE: bool = false;
 pub const CROSS_LANE_TRANSFER: bool = false;
 pub const SECRETS_CAPABILITY_ID: &str = CAPABILITY_ID;
 pub const SECRETS_DESCRIPTOR_VERSION: &str = DESCRIPTOR_VERSION;
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_provided_secrets { () => { "{\"capability_id\":\"lenso.secrets@1\",\"descriptor_version\":\"1.0.0\",\"operations\":[\"resolve\"],\"operation_kinds\":{},\"default_admission\":{\"queue_capacity\":0,\"max_concurrency\":1},\"operation_admissions\":{},\"event_admission\":null,\"cross_lane_transfer\":false}" }; }
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_required_secrets_client { () => { "{\"capability_id\":\"lenso.secrets@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"one\"}" }; }
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_required_many_secrets_client { () => { "{\"capability_id\":\"lenso.secrets@1\",\"descriptor_version\":\"1.0.0\",\"cardinality\":\"many\"}" }; }
 
 pub const RESOLVE_OPERATION: &str = "resolve";
 
@@ -124,8 +137,54 @@ pub fn decode_resolve_response(wire: &str) -> Result<ResolveResponse, serde_json
 pub fn encode_resolve_error(value: &ResolveError) -> Result<String, serde_json::Error> { encode_portable_json(value) }
 pub fn decode_resolve_error(wire: &str) -> Result<ResolveError, serde_json::Error> { decode_portable_json(wire) }
 
+#[doc(hidden)]
+pub trait __LensoIntoSecretsResolveResult {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure>;
+}
+impl __LensoIntoSecretsResolveResult for Result<ResolveResponse, ResolveError> {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> { Ok(self) }
+}
+impl __LensoIntoSecretsResolveResult for Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> { self }
+}
+impl __LensoIntoSecretsResolveResult for Result<ResolveResponse, lenso_module_authoring::ModuleError<ResolveError, RuntimeFailure>> {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> {
+        match self {
+            Ok(value) => Ok(Ok(value)),
+            Err(lenso_module_authoring::ModuleError::Domain(error)) => Ok(Err(error)),
+            Err(lenso_module_authoring::ModuleError::Runtime(error)) => Err(error),
+        }
+    }
+}
+impl __LensoIntoSecretsResolveResult for Result<ResolveResponse, SecretsInvocationError> {
+    fn __lenso_into_result(self) -> Result<Result<ResolveResponse, ResolveError>, RuntimeFailure> {
+        match self {
+            Ok(value) => Ok(Ok(value)),
+            Err(SecretsInvocationError::Domain(error)) => Ok(Err(error)),
+            Err(SecretsInvocationError::Runtime(error)) => Err(error),
+        }
+    }
+}
+
 pub trait SecretsProvider: fmt::Debug + 'static {
     fn resolve(&self, context: InvocationContext, request: ResolveRequest) -> NativeRequestFuture<Secrets>;
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_native_lower_secrets {
+    ($module:ty, $support:path) => {
+        use $support as __LensoNativeSupportSecrets;
+        impl $crate::SecretsProvider for $module {
+        fn resolve(&self, context: __LensoNativeSupportSecrets::InvocationContext, request: $crate::ResolveRequest) -> __LensoNativeSupportSecrets::NativeRequestFuture<$crate::Secrets> {
+            let module = self.clone();
+            ::std::boxed::Box::pin(async move {
+                let result = <$module>::resolve(&module, context, request).await;
+                $crate::__LensoIntoSecretsResolveResult::__lenso_into_result(result)
+            })
+        }
+        }
+    };
 }
 
 #[derive(Debug)]
@@ -168,6 +227,36 @@ impl<P: SecretsProvider> NativeRequestEndpoint for SecretsEndpoint<P> {
     }
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_native_endpoints_secrets {
+    ($provider:expr, $support:path) => {{
+        use $support as __LensoNativeSupport;
+        let endpoint = ::std::rc::Rc::new($crate::SecretsEndpoint::new($provider));
+        (
+            vec![endpoint.clone() as ::std::rc::Rc<dyn __LensoNativeSupport::NativeRequestEndpoint>],
+            vec![],
+            vec![],
+        )
+    }};
+}
+
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __lenso_native_provide_secrets {
+    ($provider:expr, $lifecycle:expr, $support:path) => {{
+        use $support as __LensoNativeSupport;
+        let (request_endpoints, stream_endpoints, event_endpoints) =
+            $crate::__lenso_native_endpoints_secrets!($provider, $support);
+        __LensoNativeSupport::NativeModuleInstance::with_all_endpoints(
+            request_endpoints,
+            stream_endpoints,
+            event_endpoints,
+            $lifecycle,
+        )
+    }};
+}
+
 #[derive(Debug)]
 pub struct SecretsClient {
     resolve: NativeRequestHandle<Secrets>,
@@ -178,9 +267,7 @@ impl SecretsClient {
     }
 
     pub fn from_dependencies(dependencies: &ModuleDependencies) -> Result<Self, RuntimeFailure> {
-        Ok(Self {
-            resolve: dependencies.one::<Secrets>()?,
-        })
+        <Self as CapabilityClient>::from_dependencies(dependencies)
     }
 
     pub async fn resolve(&self, request: ResolveRequest) -> Result<ResolveResponse, SecretsInvocationError> {
@@ -193,6 +280,46 @@ impl SecretsClient {
         self.resolve.invoke_with_context(RESOLVE_OPERATION, context, request).await
             .map_err(SecretsInvocationError::Runtime)?
             .map_err(SecretsInvocationError::Domain)
+    }
+}
+
+impl CapabilityClient for SecretsClient {
+    type Dependencies = ModuleDependencies;
+    type Error = RuntimeFailure;
+
+    const CAPABILITY_ID: &'static str = CAPABILITY_ID;
+    const DESCRIPTOR_VERSION: &'static str = DESCRIPTOR_VERSION;
+
+    fn from_dependencies(dependencies: &ModuleDependencies) -> Result<Self, RuntimeFailure> {
+        Ok(Self {
+            resolve: dependencies.one::<Secrets>()?,
+        })
+    }
+
+    fn already_connected() -> RuntimeFailure {
+        RuntimeFailure::ModuleFailure {
+            detail: format!("Capability Port {CAPABILITY_ID} was connected more than once"),
+        }
+    }
+}
+
+impl CapabilityClientMany for SecretsClient {
+    fn many_from_dependencies(
+        dependencies: &ModuleDependencies,
+    ) -> Result<Vec<BoundCapabilityClient<Self>>, RuntimeFailure> {
+        dependencies
+            .bindings()
+            .iter()
+            .filter(|binding| binding.capability_id() == CAPABILITY_ID)
+            .map(|binding| {
+                Ok(BoundCapabilityClient::new(
+                    binding.provider_instance(),
+                    Self {
+                    resolve: binding.handle().ok_or(RuntimeFailure::Unavailable { capability: CAPABILITY_ID })?.typed::<Secrets>()?,
+                    },
+                ))
+            })
+            .collect()
     }
 }
 
