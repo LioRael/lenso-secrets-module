@@ -1,6 +1,6 @@
 [package]
 name = "lenso-secrets-env-module"
-version = "0.1.0"
+version = "0.1.1"
 description = "Allowlisted environment-backed Secrets Provider Module for Lenso vNext."
 edition.workspace = true
 license.workspace = true
@@ -13,7 +13,7 @@ package-id = "lenso.secrets.env"
 
 [dependencies]
 futures.workspace = true
-lenso-capability-secrets = { version = "0.1.0", path = "../lenso-capability-secrets" }
+lenso-capability-secrets = { version = "0.1.1", path = "../lenso-capability-secrets" }
 lenso-kernel = "0.1.12"
 lenso-native-adapter = "0.2.3"
 serde.workspace = true
