@@ -1,6 +1,6 @@
 # Agent instructions
 
-This repository owns `lenso.secrets@1` and explicit Secrets Provider Modules
+This repository owns `lenso.secrets@1` and explicit Secrets Provider Plugins
 for Lenso vNext.
 
 Keep secret values out of App Plans, configuration documents, generated

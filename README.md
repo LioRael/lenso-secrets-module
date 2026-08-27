@@ -1,16 +1,16 @@
-# Lenso Secrets Module
+# Lenso Secrets Plugin
 
 Explicit secret-reference resolution for Lenso vNext applications.
 
 This repository owns:
 
 - the generated `lenso.secrets@1` Capability contract; and
-- `lenso-secrets-env-module`, a linked Rust development Provider backed by an
+- `lenso-secrets-env-plugin`, a linked Rust development Provider backed by an
   immutable logical-reference to environment-variable allowlist.
 
 It does not own application configuration, business authorization, cloud
 secret lifecycle, a global secret registry, or automatic Provider fallback.
-Secret values never belong in an App Plan, Module configuration, diagnostics,
+Secret values never belong in an App Plan, Plugin configuration, diagnostics,
 errors, or `Debug` output.
 
 The generated TypeScript binding imports `@lenso/contract-runtime`.
@@ -20,12 +20,12 @@ TypeScript consumers must declare a compatible
 ## First useful workflow
 
 The App author binds a consumer's `lenso.secrets@1` requirement to one Env
-Secrets Module Instance. The host configures an allowlist such as
+Secrets Plugin Instance. The host configures an allowlist such as
 `database/url -> APP_DATABASE_URL`. App preparation fails if any configured
 source is unavailable. A configured reference resolves through the immutable
 binding; invalid and unknown references remain typed Domain Errors.
 
-The Module Instance configuration is ordinary non-secret Plan data:
+The Plugin Instance configuration is ordinary non-secret Plan data:
 
 ```json
 {
@@ -51,5 +51,5 @@ cargo clippy --locked --workspace --all-targets -- -D warnings
 
 Publication remains parked until repository review and crates.io Trusted
 Publishers are configured. The initial release must publish
-`lenso-capability-secrets` before `lenso-secrets-env-module` can complete its
+`lenso-capability-secrets` before `lenso-secrets-env-plugin` can complete its
 registry-backed package verification.

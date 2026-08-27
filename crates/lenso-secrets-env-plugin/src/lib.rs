@@ -1,4 +1,4 @@
-//! Allowlisted environment-backed Secrets Provider Module for Lenso vNext.
+//! Allowlisted environment-backed Secrets Provider Plugin for Lenso vNext.
 
 use std::{collections::BTreeMap, error::Error, fmt, rc::Rc};
 
@@ -7,10 +7,10 @@ use lenso_capability_secrets::{
     SecretsInvocationError, SecretsProvider,
 };
 use lenso_kernel::{
-    InvocationContext, ModuleFuture, ModuleLifecycle, NativeRequestEndpoint, NativeRequestFuture,
+    InvocationContext, NativeRequestEndpoint, NativeRequestFuture, PluginFuture, PluginLifecycle,
     PrepareContext, RuntimeFailure,
 };
-use lenso_native_adapter::{NativeModuleFactory, NativeModuleFactoryContext, NativeModuleInstance};
+use lenso_native_adapter::{NativePluginFactory, NativePluginFactoryContext, NativePluginInstance};
 
 /// Maximum supported logical secret-reference length.
 pub const MAX_REFERENCE_LENGTH: usize = 256;
@@ -45,7 +45,7 @@ impl fmt::Display for EnvSecretsConfigError {
 
 impl Error for EnvSecretsConfigError {}
 
-/// Immutable logical-reference allowlist for one Module Instance.
+/// Immutable logical-reference allowlist for one Plugin Instance.
 #[derive(Clone, Default, Eq, PartialEq, serde::Deserialize, serde::Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct EnvSecretsConfig {
@@ -161,7 +161,7 @@ impl Default for EnvSecretsFactory {
     }
 }
 
-impl NativeModuleFactory for EnvSecretsFactory {
+impl NativePluginFactory for EnvSecretsFactory {
     fn package_id(&self) -> &'static str {
         PACKAGE_ID
     }
@@ -172,46 +172,46 @@ impl NativeModuleFactory for EnvSecretsFactory {
 
     fn instantiate(
         &self,
-        context: NativeModuleFactoryContext<'_>,
-    ) -> Result<NativeModuleInstance, RuntimeFailure> {
+        context: NativePluginFactoryContext<'_>,
+    ) -> Result<NativePluginInstance, RuntimeFailure> {
         instantiate_with_source(context, self.source.clone())
     }
 }
 
-/// Instantiates the ordinary process-environment-backed Module.
-#[lenso_native_adapter::module(
+/// Instantiates the ordinary process-environment-backed Plugin.
+#[lenso_native_adapter::plugin(
     descriptor = r#"{"provided_capabilities":[{"capability_id":"lenso.secrets@1","descriptor_version":"1.0.0","operations":["resolve"],"operation_kinds":{},"default_admission":{"queue_capacity":2,"max_concurrency":1},"operation_admissions":{},"event_admission":null,"cross_lane_transfer":false}],"required_capabilities":[]}"#,
     configuration_schema = "config.schema.json"
 )]
 fn instantiate(
-    context: NativeModuleFactoryContext<'_>,
-) -> Result<NativeModuleInstance, RuntimeFailure> {
+    context: NativePluginFactoryContext<'_>,
+) -> Result<NativePluginInstance, RuntimeFailure> {
     instantiate_with_source(context, Rc::new(ProcessEnvironment))
 }
 
 fn instantiate_with_source(
-    context: NativeModuleFactoryContext<'_>,
+    context: NativePluginFactoryContext<'_>,
     source: Rc<dyn SecretSource>,
-) -> Result<NativeModuleInstance, RuntimeFailure> {
+) -> Result<NativePluginInstance, RuntimeFailure> {
     if context.entrypoint() != "default" {
         return Err(RuntimeFailure::InvalidResolvedPlan {
-            detail: "unsupported Env Secrets Module entrypoint".to_owned(),
+            detail: "unsupported Env Secrets Plugin entrypoint".to_owned(),
         });
     }
     let config =
         serde_json::from_str::<EnvSecretsConfig>(context.configuration()).map_err(|error| {
             RuntimeFailure::InvalidResolvedPlan {
-                detail: format!("Env Secrets Module configuration is invalid: {error}"),
+                detail: format!("Env Secrets Plugin configuration is invalid: {error}"),
             }
         })?;
     config
         .validate()
         .map_err(|error| RuntimeFailure::InvalidResolvedPlan {
-            detail: format!("Env Secrets Module configuration is invalid: {error}"),
+            detail: format!("Env Secrets Plugin configuration is invalid: {error}"),
         })?;
     let provider = EnvSecretsProvider::new(config, source);
     let endpoint = Rc::new(SecretsEndpoint::new(provider.clone())) as Rc<dyn NativeRequestEndpoint>;
-    Ok(NativeModuleInstance::with_lifecycle(
+    Ok(NativePluginInstance::with_lifecycle(
         vec![endpoint],
         EnvSecretsLifecycle { provider },
     ))
@@ -247,7 +247,7 @@ impl EnvSecretsProvider {
             })?;
         self.source
             .read(source)
-            .map_err(|SourceUnavailable| RuntimeFailure::ModuleFailure {
+            .map_err(|SourceUnavailable| RuntimeFailure::PluginFailure {
                 detail: format!("configured secret reference `{reference}` is unavailable"),
             })
     }
@@ -295,8 +295,8 @@ struct EnvSecretsLifecycle {
     provider: EnvSecretsProvider,
 }
 
-impl ModuleLifecycle for EnvSecretsLifecycle {
-    fn prepare(&self, _context: PrepareContext) -> ModuleFuture {
+impl PluginLifecycle for EnvSecretsLifecycle {
+    fn prepare(&self, _context: PrepareContext) -> PluginFuture {
         Box::pin(futures::future::ready(self.provider.verify_sources()))
     }
 }

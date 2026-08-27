@@ -2,18 +2,18 @@ use std::{cell::RefCell, collections::BTreeMap, rc::Rc, time::Duration};
 
 use lenso_app_plan::{
     AppComposition, CapabilityBinding, CapabilityEndpointPlan, CapabilityRequirementPlan,
-    ModuleInstancePlan, ResolvedAppPlan,
+    PluginInstancePlan, ResolvedAppPlan,
 };
 use lenso_capability_secrets::{
     CAPABILITY_ID, DESCRIPTOR_VERSION, RESOLVE_OPERATION, ResolveError, ResolveRequest, Secrets,
 };
 use lenso_kernel::{DeterministicDriver, Kernel, RuntimeFailure, ShutdownOutcome};
 use lenso_native_adapter::{
-    NativeModuleFactory, NativeModuleFactoryContext, NativeModuleInstance, NativeModuleRegistry,
+    NativePluginFactory, NativePluginFactoryContext, NativePluginInstance, NativePluginRegistry,
 };
 
 use super::{
-    EnvSecretsConfig, EnvSecretsConfigError, EnvSecretsFactory, MODULE_DESCRIPTOR_JSON, PACKAGE_ID,
+    EnvSecretsConfig, EnvSecretsConfigError, EnvSecretsFactory, PACKAGE_ID, PLUGIN_DESCRIPTOR_JSON,
     SecretSource, SourceUnavailable,
 };
 
@@ -22,16 +22,16 @@ const CALLER_PACKAGE_ID: &str = "test.secrets-caller";
 #[derive(Debug)]
 struct CallerFactory;
 
-impl NativeModuleFactory for CallerFactory {
+impl NativePluginFactory for CallerFactory {
     fn package_id(&self) -> &'static str {
         CALLER_PACKAGE_ID
     }
 
     fn instantiate(
         &self,
-        _context: NativeModuleFactoryContext<'_>,
-    ) -> Result<NativeModuleInstance, RuntimeFailure> {
-        Ok(NativeModuleInstance::default())
+        _context: NativePluginFactoryContext<'_>,
+    ) -> Result<NativePluginInstance, RuntimeFailure> {
+        Ok(NativePluginInstance::default())
     }
 }
 
@@ -69,10 +69,10 @@ fn config() -> EnvSecretsConfig {
 }
 
 #[test]
-fn package_descriptor_and_linked_factory_are_derived_from_the_module() {
+fn package_descriptor_and_linked_factory_are_derived_from_the_plugin() {
     let descriptor: serde_json::Value =
-        serde_json::from_str(MODULE_DESCRIPTOR_JSON).expect("descriptor should be valid JSON");
-    assert_eq!(descriptor["package_id"], PACKAGE_ID);
+        serde_json::from_str(PLUGIN_DESCRIPTOR_JSON).expect("descriptor should be valid JSON");
+    assert_eq!(descriptor["plugin_id"], PACKAGE_ID);
     assert_eq!(
         descriptor["provided_capabilities"][0]["capability_id"],
         CAPABILITY_ID
@@ -82,7 +82,7 @@ fn package_descriptor_and_linked_factory_are_derived_from_the_module() {
         serde_json::json!(["references"])
     );
 
-    let linked = NativeModuleRegistry::new()
+    let linked = NativePluginRegistry::new()
         .with_linked_factories()
         .factories()
         .filter(|factory| factory.package_id() == PACKAGE_ID)
@@ -95,10 +95,10 @@ fn plan(config: &EnvSecretsConfig) -> ResolvedAppPlan {
 }
 
 fn plan_with_configuration(configuration: String) -> ResolvedAppPlan {
-    let caller = ModuleInstancePlan::new("caller", CALLER_PACKAGE_ID).with_requirement(
+    let caller = PluginInstancePlan::new("caller", CALLER_PACKAGE_ID).with_requirement(
         CapabilityRequirementPlan::one(CAPABILITY_ID, DESCRIPTOR_VERSION),
     );
-    let secrets = ModuleInstancePlan::new("secrets", PACKAGE_ID)
+    let secrets = PluginInstancePlan::new("secrets", PACKAGE_ID)
         .with_configuration(configuration)
         .with_capability(CapabilityEndpointPlan::new(
             CAPABILITY_ID,
@@ -126,7 +126,7 @@ fn invalid_plan_configuration_fails_before_preparation() {
             serde_json::json!({"references": {"../database": "APP_DATABASE_URL"}}).to_string(),
         ),
         driver.clone(),
-        NativeModuleRegistry::new()
+        NativePluginRegistry::new()
             .with_factory(CallerFactory)
             .with_factory(EnvSecretsFactory::with_source(Rc::new(
                 MutableSource::default(),
@@ -148,7 +148,7 @@ fn duplicate_plan_references_are_rejected_instead_of_overwritten() {
             r#"{"references":{"database/url":"FIRST_URL","database/url":"SECOND_URL"}}"#.to_owned(),
         ),
         driver.clone(),
-        NativeModuleRegistry::new()
+        NativePluginRegistry::new()
             .with_factory(CallerFactory)
             .with_factory(EnvSecretsFactory::with_source(Rc::new(
                 MutableSource::default(),
@@ -173,7 +173,7 @@ fn configured_secret_resolves_and_source_rotation_is_observed() {
         .run(Kernel::start_native(
             plan(&config),
             driver.clone(),
-            NativeModuleRegistry::new()
+            NativePluginRegistry::new()
                 .with_factory(CallerFactory)
                 .with_factory(factory),
         ))
@@ -220,7 +220,7 @@ fn invalid_and_unknown_references_are_distinct_domain_errors() {
         .run(Kernel::start_native(
             plan(&config),
             driver.clone(),
-            NativeModuleRegistry::new()
+            NativePluginRegistry::new()
                 .with_factory(CallerFactory)
                 .with_factory(EnvSecretsFactory::with_source(Rc::new(source))),
         ))
@@ -261,7 +261,7 @@ fn missing_required_source_fails_preparation_without_leaking_source_details() {
     let result = driver.run(Kernel::start_native(
         plan(&config),
         driver.clone(),
-        NativeModuleRegistry::new()
+        NativePluginRegistry::new()
             .with_factory(CallerFactory)
             .with_factory(EnvSecretsFactory::with_source(Rc::new(
                 MutableSource::default(),
@@ -270,7 +270,7 @@ fn missing_required_source_fails_preparation_without_leaking_source_details() {
 
     assert!(matches!(
         result,
-        Err(RuntimeFailure::ModuleFailure { detail })
+        Err(RuntimeFailure::PluginFailure { detail })
             if detail.contains("database/url")
                 && !detail.contains("APP_DATABASE_URL")
                 && !detail.contains("secret-value")
@@ -287,7 +287,7 @@ fn runtime_source_loss_is_truthful_and_does_not_fallback() {
         .run(Kernel::start_native(
             plan(&config),
             driver.clone(),
-            NativeModuleRegistry::new()
+            NativePluginRegistry::new()
                 .with_factory(CallerFactory)
                 .with_factory(EnvSecretsFactory::with_source(Rc::new(source.clone()))),
         ))
@@ -305,7 +305,7 @@ fn runtime_source_loss_is_truthful_and_does_not_fallback() {
         .expect_err("lost source must be a Runtime Failure");
     assert!(matches!(
         error,
-        RuntimeFailure::ModuleFailure { detail }
+        RuntimeFailure::PluginFailure { detail }
             if detail.contains("database/url") && !detail.contains("secret-value")
     ));
 }

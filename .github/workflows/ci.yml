@@ -27,4 +27,4 @@ jobs:
       - name: Package public crates
         run: |
           cargo package --locked -p lenso-capability-secrets
-          cargo package --locked --list -p lenso-secrets-env-module
+          cargo package --locked --list -p lenso-secrets-env-plugin
