@@ -14,11 +14,11 @@ rust-version = "1.94"
 
 [workspace.dependencies]
 futures = "0.3"
-lenso-app-plan = { version = "0.2.0", git = "https://github.com/LioRael/lenso", rev = "d95e2240e83e9f4b90139a48ca97e067376f4fa9" }
+lenso-app-plan = { version = "0.3.0", git = "https://github.com/LioRael/lenso", rev = "cd35675a191d815b690c8889756dfe859a0e4d7b" }
 lenso-contract-codegen = { version = "0.6.3", git = "https://github.com/LioRael/lenso-protocols", rev = "239381609da51158d0aae5991bc0d074f742ef42" }
 lenso-contract-runtime = { version = "0.1.3", git = "https://github.com/LioRael/lenso-protocols", rev = "239381609da51158d0aae5991bc0d074f742ef42" }
-lenso-kernel = { version = "0.1.12", git = "https://github.com/LioRael/lenso", rev = "d95e2240e83e9f4b90139a48ca97e067376f4fa9" }
-lenso-native-adapter = { version = "0.2.4", git = "https://github.com/LioRael/lenso-runtime-rust", rev = "6709c8dd02bfaf1cc83ca85f1446a91dc7069b8d" }
+lenso-kernel = { version = "0.2.0", git = "https://github.com/LioRael/lenso", rev = "cd35675a191d815b690c8889756dfe859a0e4d7b" }
+lenso-native-adapter = { version = "0.3.0", git = "https://github.com/LioRael/lenso-runtime-rust", rev = "d15b45384b3ad7d8734dac06485b36c5e0d3eb79" }
 lenso-plugin-authoring = { version = "0.1.1", git = "https://github.com/LioRael/lenso-protocols", rev = "239381609da51158d0aae5991bc0d074f742ef42" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
