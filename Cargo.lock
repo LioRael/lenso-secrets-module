@@ -280,7 +280,7 @@ dependencies = [
 [[package]]
 name = "lenso-native-adapter"
 version = "0.3.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=7f5acd577374157cb57c72c9dd0d4b0e054c53ce#7f5acd577374157cb57c72c9dd0d4b0e054c53ce"
+source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=6bd5b88f3c6610581fcc4306c6cf356f71f7c611#6bd5b88f3c6610581fcc4306c6cf356f71f7c611"
 dependencies = [
  "futures",
  "inventory",
@@ -294,7 +294,7 @@ dependencies = [
 [[package]]
 name = "lenso-native-adapter-macros"
 version = "0.2.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=7f5acd577374157cb57c72c9dd0d4b0e054c53ce#7f5acd577374157cb57c72c9dd0d4b0e054c53ce"
+source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=6bd5b88f3c6610581fcc4306c6cf356f71f7c611#6bd5b88f3c6610581fcc4306c6cf356f71f7c611"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -312,7 +312,7 @@ source = "git+https://github.com/LioRael/lenso-protocols?rev=9d2774c767fd64a6cc6
 [[package]]
 name = "lenso-runtime-codec"
 version = "0.2.0"
-source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=7f5acd577374157cb57c72c9dd0d4b0e054c53ce#7f5acd577374157cb57c72c9dd0d4b0e054c53ce"
+source = "git+https://github.com/LioRael/lenso-runtime-rust?rev=6bd5b88f3c6610581fcc4306c6cf356f71f7c611#6bd5b88f3c6610581fcc4306c6cf356f71f7c611"
 dependencies = [
  "futures",
  "hex",
