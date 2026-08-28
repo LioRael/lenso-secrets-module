@@ -28,3 +28,6 @@ jobs:
         run: |
           cargo package --locked -p lenso-capability-secrets
           cargo package --locked --list -p lenso-secrets-env-plugin
+          cargo package --locked --list -p lenso-secrets-keychain-plugin
+          cargo package --locked --list -p lenso-secrets-encrypted-file-plugin
+          cargo package --locked --list -p lenso-secrets-command-plugin
