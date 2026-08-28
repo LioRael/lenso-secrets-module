@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "program",
+    "arguments",
+    "environment_allowlist",
+    "references",
+    "timeout_ms",
+    "max_output_bytes"
+  ],
+  "properties": {
+    "program": { "type": "string" },
+    "arguments": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "environment_allowlist": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "timeout_ms": { "type": "integer" },
+    "max_output_bytes": { "type": "integer" }
+  }
+}

@@ -1,0 +1,29 @@
+[package]
+name = "lenso-secrets-encrypted-file-plugin"
+version = "0.1.0"
+description = "Age-encrypted local-file Secrets Provider Plugin for Lenso."
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[package.metadata.lenso]
+plugin-id = "lenso.secrets.encrypted-file"
+root-slot = "secrets"
+
+[dependencies]
+age.workspace = true
+futures.workspace = true
+lenso.workspace = true
+lenso-capability-secrets = { version = "0.1.2", path = "../lenso-capability-secrets" }
+lenso-kernel.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

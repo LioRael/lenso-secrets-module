@@ -1,0 +1,28 @@
+[package]
+name = "lenso-secrets-keychain-plugin"
+version = "0.1.0"
+description = "Allowlisted macOS Keychain Secrets Provider Plugin for Lenso."
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[package.metadata.lenso]
+plugin-id = "lenso.secrets.keychain"
+root-slot = "secrets"
+
+[dependencies]
+futures.workspace = true
+lenso.workspace = true
+lenso-capability-secrets = { version = "0.1.2", path = "../lenso-capability-secrets" }
+lenso-kernel.workspace = true
+secrecy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+security-framework = "3.7.0"
+
+[lints]
+workspace = true

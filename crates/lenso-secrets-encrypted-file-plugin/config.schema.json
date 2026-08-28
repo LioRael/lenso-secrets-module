@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "path",
+    "key_environment_variable",
+    "references",
+    "max_file_bytes",
+    "max_plaintext_bytes",
+    "max_records"
+  ],
+  "properties": {
+    "path": { "type": "string" },
+    "key_environment_variable": { "type": "string" },
+    "references": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "max_file_bytes": { "type": "integer" },
+    "max_plaintext_bytes": { "type": "integer" },
+    "max_records": { "type": "integer" }
+  }
+}
