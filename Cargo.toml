@@ -9,7 +9,7 @@ members = [
 edition = "2024"
 license = "MIT"
 publish = true
-repository = "https://github.com/LioRael/lenso-secrets-module"
+repository = "https://github.com/LioRael/lenso-secrets-plugin"
 rust-version = "1.94"
 
 [workspace.dependencies]
