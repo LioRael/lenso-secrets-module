@@ -11,14 +11,14 @@ build = "build.rs"
 
 [dependencies]
 futures.workspace = true
-lenso-contract-runtime = "0.1.0"
-lenso-kernel = "0.1.12"
-lenso-module-authoring = "0.1.1"
+lenso-contract-runtime.workspace = true
+lenso-kernel.workspace = true
+lenso-plugin-authoring.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 
 [build-dependencies]
-lenso-contract-codegen = "0.6.2"
+lenso-contract-codegen.workspace = true
 
 [lints]
 workspace = true
