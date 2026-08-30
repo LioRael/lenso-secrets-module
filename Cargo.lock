@@ -992,6 +992,7 @@ dependencies = [
  "lenso",
  "lenso-capability-secrets",
  "lenso-kernel",
+ "libc",
  "serde",
  "serde_json",
  "tempfile",

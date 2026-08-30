@@ -1,6 +1,13 @@
 //! Age-encrypted local-file Secrets Provider Plugin.
 
-use std::{collections::BTreeMap, fmt, fs, io::Read, iter, path::PathBuf};
+use std::{
+    collections::BTreeMap,
+    fmt,
+    fs::File,
+    io::Read,
+    iter,
+    path::{Path, PathBuf},
+};
 
 use age::secrecy::SecretString;
 use lenso::prelude::*;
@@ -169,17 +176,23 @@ fn load_document(
     config: &EncryptedFileConfig,
     key_source: &dyn KeySource,
 ) -> Result<FileDocument, ()> {
-    let metadata = fs::symlink_metadata(&config.path).map_err(|_| ())?;
-    if !metadata.file_type().is_file() || metadata.file_type().is_symlink() {
+    let file = open_encrypted_file(&config.path)?;
+    load_document_from_file(config, key_source, file)
+}
+
+fn load_document_from_file(
+    config: &EncryptedFileConfig,
+    key_source: &dyn KeySource,
+    mut file: File,
+) -> Result<FileDocument, ()> {
+    let metadata = file.metadata().map_err(|_| ())?;
+    if !metadata.file_type().is_file() {
         return Err(());
     }
     if metadata.len() == 0 || metadata.len() > config.max_file_bytes {
         return Err(());
     }
-    let ciphertext = fs::read(&config.path).map_err(|_| ())?;
-    if ciphertext.len() as u64 > config.max_file_bytes {
-        return Err(());
-    }
+    let ciphertext = read_bounded(&mut file, config.max_file_bytes)?;
     let passphrase = key_source.read(&config.key_environment_variable)?;
     let decryptor = age::Decryptor::new(ciphertext.as_slice()).map_err(|_| ())?;
     let identity = age::scrypt::Identity::new(passphrase);
@@ -207,6 +220,36 @@ fn load_document(
         return Err(());
     }
     Ok(document)
+}
+
+#[cfg(unix)]
+fn open_encrypted_file(path: &Path) -> Result<File, ()> {
+    use std::os::unix::fs::OpenOptionsExt as _;
+
+    std::fs::OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_NOFOLLOW | libc::O_CLOEXEC | libc::O_NONBLOCK)
+        .open(path)
+        .map_err(|_| ())
+}
+
+#[cfg(not(unix))]
+fn open_encrypted_file(_path: &Path) -> Result<File, ()> {
+    // A platform-specific no-follow open is required before this Provider can
+    // safely support another target. Never fall back to a check-then-open flow.
+    Err(())
+}
+
+fn read_bounded(reader: &mut impl Read, max_bytes: u64) -> Result<Vec<u8>, ()> {
+    let mut bytes = Vec::new();
+    reader
+        .take(max_bytes.checked_add(1).ok_or(())?)
+        .read_to_end(&mut bytes)
+        .map_err(|_| ())?;
+    if bytes.is_empty() || u64::try_from(bytes.len()).map_err(|_| ())? > max_bytes {
+        return Err(());
+    }
+    Ok(bytes)
 }
 
 trait KeySource: fmt::Debug {
@@ -286,7 +329,10 @@ fn invalid_plan(detail: impl Into<String>) -> RuntimeFailure {
 
 #[cfg(test)]
 mod tests {
-    use std::io::Write;
+    use std::{
+        fs,
+        io::{Cursor, Write},
+    };
 
     use super::*;
 
@@ -388,5 +434,61 @@ mod tests {
             config.path = link;
             assert!(verify_sources(&config, &FixedKeySource("passphrase")).is_err());
         }
+    }
+
+    #[test]
+    fn rejects_an_oversized_encrypted_file() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("oversized.age");
+        fs::write(&path, [0_u8; 33]).unwrap();
+        let mut config = config(path);
+        config.max_file_bytes = 32;
+
+        assert!(verify_sources(&config, &FixedKeySource("passphrase")).is_err());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn rejects_a_fifo_immediately_with_a_sanitized_failure() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("secrets.pipe");
+        let status = std::process::Command::new("mkfifo")
+            .arg(&path)
+            .status()
+            .unwrap();
+        assert!(status.success());
+
+        let failure = verify_sources(&config(path), &FixedKeySource("passphrase")).unwrap_err();
+        assert!(matches!(
+            failure,
+            RuntimeFailure::PluginFailure { ref detail }
+                if detail == "configured encrypted secret file is unavailable"
+        ));
+    }
+
+    #[test]
+    fn bounded_reader_consumes_at_most_the_limit_plus_one() {
+        let mut reader = Cursor::new(vec![0_u8; 4096]);
+
+        assert!(read_bounded(&mut reader, 32).is_err());
+        assert_eq!(reader.position(), 33);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn an_open_handle_is_not_redirected_by_path_replacement() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("secrets.age");
+        let replacement = directory.path().join("replacement.age");
+        write_document(&path, "passphrase", "first-value");
+        write_document(&replacement, "passphrase", "replacement-value");
+        let config = config(path.clone());
+
+        let handle = open_encrypted_file(&path).unwrap();
+        fs::rename(&replacement, &path).unwrap();
+        let document =
+            load_document_from_file(&config, &FixedKeySource("passphrase"), handle).unwrap();
+
+        assert_eq!(document.secrets.get("openai").unwrap(), "first-value");
     }
 }
