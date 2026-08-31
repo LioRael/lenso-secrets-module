@@ -38,8 +38,8 @@ filesystem tests. Out of scope: AGE format, key sources, or command secrets.
 
 ## Verification
 
-- `lenso-cargo test -p lenso-secrets-encrypted-file-plugin` using the shared wrapper -> all pass.
-- `lenso-cargo check -p lenso-secrets-encrypted-file-plugin --all-targets` -> exit 0.
+- `cargo test -p lenso-secrets-encrypted-file-plugin` -> all pass.
+- `cargo check -p lenso-secrets-encrypted-file-plugin --all-targets` -> exit 0.
 - `git diff --check` -> no output.
 
 ## STOP conditions
