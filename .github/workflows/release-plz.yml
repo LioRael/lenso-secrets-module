@@ -1,8 +1,6 @@
 name: Release-plz
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       live:
@@ -66,20 +64,5 @@ jobs:
       - uses: release-plz/action@2eb1d8bcb770b4c48ccfaad919734b38b51958c9 # v0.5.131
         with:
           command: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-plz-pr:
-    if: ${{ github.event_name == 'push' && github.repository_owner == 'LioRael' }}
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - *checkout
-      - *rust
-      - uses: release-plz/action@2eb1d8bcb770b4c48ccfaad919734b38b51958c9 # v0.5.131
-        with:
-          command: release-pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

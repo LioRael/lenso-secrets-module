@@ -1,9 +1,9 @@
 # Release process
 
 Publication is manual-only from reviewed `main` through
-`.github/workflows/release-plz.yml`. Pushes may refresh a Release-plz pull
-request but cannot publish. A live run additionally requires `live=true`, the
-literal confirmation `publish`, and `main`.
+`.github/workflows/release-plz.yml`. Repository pushes do not run release
+automation. A live run additionally requires `live=true`, the literal
+confirmation `publish`, and `main`.
 
 ## Current provider release
 
