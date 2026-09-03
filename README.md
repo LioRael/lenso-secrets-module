@@ -131,5 +131,6 @@ cargo test --locked --workspace
 cargo clippy --locked --workspace --all-targets -- -D warnings
 ```
 
-Crates.io publication must publish `lenso-capability-secrets` before the
-Provider crates can complete registry-backed package verification.
+`lenso-capability-secrets` and the Environment Provider are published. The
+remaining Provider crates follow the reviewed, manual-only process in
+[`docs/release-process.md`](docs/release-process.md).
