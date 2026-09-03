@@ -16,7 +16,7 @@ root-slot = "secrets"
 age.workspace = true
 futures.workspace = true
 lenso.workspace = true
-lenso-capability-secrets = { version = "0.1.2", path = "../lenso-capability-secrets" }
+lenso-capability-secrets = { version = "0.1.3", path = "../lenso-capability-secrets" }
 lenso-kernel.workspace = true
 libc.workspace = true
 serde.workspace = true
