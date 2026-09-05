@@ -25,6 +25,7 @@ cohort for consumers such as the Agent Host. Each Provider exports an explicit,
 non-elidable `link()` anchor so optimized Host binaries retain its native
 inventory registration through an indirect linkage-set dependency.
 The workspace link smoke test exercises that same two-crate aggregation path.
+These releases delegate to Native Adapter 0.3.6's generated factory anchors.
 
 Before the first release, allocate each new crate name on crates.io, then
 configure a separate Trusted Publisher for it:
