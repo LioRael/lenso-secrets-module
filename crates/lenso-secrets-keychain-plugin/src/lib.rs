@@ -10,6 +10,12 @@ use secrecy::{ExposeSecret, SecretString};
 const MAX_REFERENCE_LENGTH: usize = 256;
 const MAX_SOURCE_LENGTH: usize = 512;
 
+/// Keeps this Plugin's static factory registration linked into a Host binary.
+#[inline(never)]
+pub fn link() -> &'static str {
+    PLUGIN_DESCRIPTOR_JSON
+}
+
 #[derive(Clone, Debug, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct KeychainConfig {

@@ -21,6 +21,12 @@ const MAX_FILE_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_PLAINTEXT_BYTES: usize = 16 * 1024 * 1024;
 const MAX_RECORDS: usize = 100_000;
 
+/// Keeps this Plugin's static factory registration linked into a Host binary.
+#[inline(never)]
+pub fn link() -> &'static str {
+    PLUGIN_DESCRIPTOR_JSON
+}
+
 #[derive(Clone, Debug, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct EncryptedFileConfig {

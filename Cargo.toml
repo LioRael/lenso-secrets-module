@@ -6,6 +6,7 @@ members = [
     "crates/lenso-secrets-keychain-plugin",
     "crates/lenso-secrets-encrypted-file-plugin",
     "crates/lenso-secrets-command-plugin",
+    "crates/lenso-secrets-link-smoke",
 ]
 
 [workspace.package]

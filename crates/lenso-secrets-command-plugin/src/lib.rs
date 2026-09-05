@@ -28,6 +28,12 @@ const MAX_ENVIRONMENT_NAMES: usize = 64;
 const MAX_TIMEOUT_MS: u64 = 300_000;
 const MAX_OUTPUT_BYTES: usize = 1_048_576;
 
+/// Keeps this Plugin's static factory registration linked into a Host binary.
+#[inline(never)]
+pub fn link() -> &'static str {
+    PLUGIN_DESCRIPTOR_JSON
+}
+
 #[derive(Clone, Debug, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct CommandConfig {
