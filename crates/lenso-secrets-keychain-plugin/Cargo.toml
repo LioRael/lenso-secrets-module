@@ -1,6 +1,6 @@
 [package]
 name = "lenso-secrets-keychain-plugin"
-version = "0.1.1"
+version = "0.1.2"
 description = "Allowlisted macOS Keychain Secrets Provider Plugin for Lenso."
 edition.workspace = true
 license.workspace = true

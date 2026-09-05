@@ -1,0 +1,15 @@
+[package]
+name = "lenso-secrets-link-smoke"
+version = "0.0.0"
+edition.workspace = true
+publish = false
+
+[dependencies]
+lenso-native-adapter.workspace = true
+lenso-secrets-command-plugin = { path = "../lenso-secrets-command-plugin" }
+lenso-secrets-encrypted-file-plugin = { path = "../lenso-secrets-encrypted-file-plugin" }
+lenso-secrets-env-plugin = { path = "../lenso-secrets-env-plugin" }
+lenso-secrets-keychain-plugin = { path = "../lenso-secrets-keychain-plugin" }
+
+[lints]
+workspace = true

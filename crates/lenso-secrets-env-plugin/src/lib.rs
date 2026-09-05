@@ -12,6 +12,12 @@ use lenso_kernel::{
 };
 use lenso_native_adapter::{NativePluginFactory, NativePluginFactoryContext, NativePluginInstance};
 
+/// Keeps this Plugin's static factory registration linked into a Host binary.
+#[inline(never)]
+pub fn link() -> &'static str {
+    PLUGIN_DESCRIPTOR_JSON
+}
+
 /// Maximum supported logical secret-reference length.
 pub const MAX_REFERENCE_LENGTH: usize = 256;
 
