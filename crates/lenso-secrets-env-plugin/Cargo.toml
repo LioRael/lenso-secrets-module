@@ -1,6 +1,6 @@
 [package]
 name = "lenso-secrets-env-plugin"
-version = "0.1.5"
+version = "0.1.6"
 description = "Allowlisted environment-backed Secrets Provider Plugin for Lenso vNext."
 edition.workspace = true
 license.workspace = true

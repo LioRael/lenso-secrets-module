@@ -6,10 +6,7 @@ publish = false
 
 [dependencies]
 lenso-native-adapter.workspace = true
-lenso-secrets-command-plugin = { path = "../lenso-secrets-command-plugin" }
-lenso-secrets-encrypted-file-plugin = { path = "../lenso-secrets-encrypted-file-plugin" }
-lenso-secrets-env-plugin = { path = "../lenso-secrets-env-plugin" }
-lenso-secrets-keychain-plugin = { path = "../lenso-secrets-keychain-plugin" }
+lenso-secrets-link-set = { path = "../lenso-secrets-link-set" }
 
 [lints]
 workspace = true

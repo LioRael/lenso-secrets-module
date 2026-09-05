@@ -14,16 +14,16 @@ identity as its release-commit proof.
 The native-linkage release publishes in dependency order:
 
 1. `lenso-capability-secrets` 0.1.4
-2. `lenso-secrets-env-plugin` 0.1.5
-3. `lenso-secrets-command-plugin` 0.1.2
-4. `lenso-secrets-encrypted-file-plugin` 0.1.2
-5. `lenso-secrets-keychain-plugin` 0.1.2
+2. `lenso-secrets-env-plugin` 0.1.6
+3. `lenso-secrets-command-plugin` 0.1.3
+4. `lenso-secrets-encrypted-file-plugin` 0.1.3
+5. `lenso-secrets-keychain-plugin` 0.1.3
 
 These versions use App Plan 0.4, Kernel 0.3, Native Adapter 0.3.5, and the
 generated `lenso.secrets@1` descriptor digest. They form one compatibility
-cohort for consumers such as the Agent Host. Each Provider now exports an
-explicit `link()` anchor so Linux Host binaries retain its native inventory
-registration.
+cohort for consumers such as the Agent Host. Each Provider exports an explicit,
+non-elidable `link()` anchor so optimized Host binaries retain its native
+inventory registration through an indirect linkage-set dependency.
 
 Before the first release, allocate each new crate name on crates.io, then
 configure a separate Trusted Publisher for it:

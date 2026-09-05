@@ -8,13 +8,7 @@ mod tests {
 
     #[test]
     fn explicit_link_anchors_retain_every_factory() {
-        let descriptors = [
-            lenso_secrets_command_plugin::link(),
-            lenso_secrets_encrypted_file_plugin::link(),
-            lenso_secrets_env_plugin::link(),
-            lenso_secrets_keychain_plugin::link(),
-        ];
-        assert!(descriptors.iter().all(|descriptor| !descriptor.is_empty()));
+        lenso_secrets_link_set::link();
 
         let package_ids = NativePluginRegistry::new()
             .with_linked_factories()
