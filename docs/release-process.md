@@ -14,12 +14,12 @@ identity as its release-commit proof.
 The native-linkage release publishes in dependency order:
 
 1. `lenso-capability-secrets` 0.1.4
-2. `lenso-secrets-env-plugin` 0.1.6
-3. `lenso-secrets-command-plugin` 0.1.3
-4. `lenso-secrets-encrypted-file-plugin` 0.1.3
-5. `lenso-secrets-keychain-plugin` 0.1.3
+2. `lenso-secrets-env-plugin` 0.1.7
+3. `lenso-secrets-command-plugin` 0.1.4
+4. `lenso-secrets-encrypted-file-plugin` 0.1.4
+5. `lenso-secrets-keychain-plugin` 0.1.4
 
-These versions use App Plan 0.4, Kernel 0.3, Native Adapter 0.3.5, and the
+These versions use App Plan 0.4, Kernel 0.3, Native Adapter 0.3.6, and the
 generated `lenso.secrets@1` descriptor digest. They form one compatibility
 cohort for consumers such as the Agent Host. Each Provider exports an explicit,
 non-elidable `link()` anchor so optimized Host binaries retain its native

@@ -1,6 +1,6 @@
 [package]
 name = "lenso-secrets-encrypted-file-plugin"
-version = "0.1.3"
+version = "0.1.4"
 description = "Age-encrypted local-file Secrets Provider Plugin for Lenso."
 edition.workspace = true
 license.workspace = true

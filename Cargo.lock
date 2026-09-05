@@ -833,9 +833,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "lenso"
-version = "0.5.7"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d485e601824fcb53f76faa47c6326ef2f3ecd0e0723f8a9d5ee734324ce799e2"
+checksum = "6e9a45f3351114210537a2f78301e6d859bd97bfff19d1f5ac09bb09dc6a9c93"
 dependencies = [
  "futures",
  "lenso-kernel",
@@ -892,9 +892,9 @@ dependencies = [
 
 [[package]]
 name = "lenso-native-adapter"
-version = "0.3.5"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8817afe46f3969949f324f8a7d376fe39cbaa602e6f20f8c73b45fe451ada7c0"
+checksum = "6ff56f26411850671659e48176f0f7857f1b768d8f6c42f14e519855a2f88c40"
 dependencies = [
  "futures",
  "inventory",
@@ -908,9 +908,9 @@ dependencies = [
 
 [[package]]
 name = "lenso-native-adapter-macros"
-version = "0.2.3"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b7a4b25fe4ff0c80325dd8037a6c8a4d90970c33f7f92f28779867c3fd5b5f4"
+checksum = "556c77b2384c98892bad05f70170b629f25914825807a853d0c803d35d7f0330"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -944,7 +944,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-command-plugin"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "futures",
  "lenso",
@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-encrypted-file-plugin"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "age",
  "futures",
@@ -975,7 +975,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-env-plugin"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "futures",
  "lenso-app-plan",
@@ -988,7 +988,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-keychain-plugin"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "futures",
  "lenso",
