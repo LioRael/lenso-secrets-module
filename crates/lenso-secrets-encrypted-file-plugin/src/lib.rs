@@ -24,7 +24,7 @@ const MAX_RECORDS: usize = 100_000;
 /// Keeps this Plugin's static factory registration linked into a Host binary.
 #[inline(never)]
 pub fn link() {
-    std::hint::black_box(PLUGIN_DESCRIPTOR_JSON);
+    __lenso_link_encrypted_file_secrets_plugin();
 }
 
 #[derive(Clone, Debug, serde::Deserialize)]

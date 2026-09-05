@@ -20,11 +20,11 @@ rust-version = "1.94"
 [workspace.dependencies]
 futures = "0.3"
 age = "0.12.1"
-lenso = { version = "0.5.7" }
+lenso = { version = "0.5.9" }
 lenso-app-plan = { version = "0.4.1" }
 lenso-contract-runtime = { version = "0.2.0" }
 lenso-kernel = { version = "0.3.3" }
-lenso-native-adapter = { version = "0.3.5" }
+lenso-native-adapter = { version = "0.3.6" }
 lenso-plugin-authoring = { version = "0.2.0" }
 libc = "0.2"
 serde = { version = "1.0", features = ["derive"] }
