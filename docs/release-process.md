@@ -7,13 +7,17 @@ confirmation `publish`, and `main`.
 
 ## Current provider release
 
-`lenso-capability-secrets` 0.1.2 and `lenso-secrets-env-plugin` 0.1.2 are
-already available from crates.io. Publish the new Provider crates in this
-order; each depends only on the published Capability and platform crates:
+The runtime-cohort release publishes in dependency order:
 
-1. `lenso-secrets-command-plugin` 0.1.0
-2. `lenso-secrets-encrypted-file-plugin` 0.1.0
-3. `lenso-secrets-keychain-plugin` 0.1.0
+1. `lenso-capability-secrets` 0.1.4
+2. `lenso-secrets-env-plugin` 0.1.4
+3. `lenso-secrets-command-plugin` 0.1.1
+4. `lenso-secrets-encrypted-file-plugin` 0.1.1
+5. `lenso-secrets-keychain-plugin` 0.1.1
+
+These versions use App Plan 0.4, Kernel 0.3, Native Adapter 0.3.5, and the
+generated `lenso.secrets@1` descriptor digest. They form one compatibility
+cohort for consumers such as the Agent Host.
 
 Before the first release, allocate each new crate name on crates.io, then
 configure a separate Trusted Publisher for it:
