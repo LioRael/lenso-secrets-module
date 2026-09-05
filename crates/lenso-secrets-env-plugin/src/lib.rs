@@ -14,8 +14,8 @@ use lenso_native_adapter::{NativePluginFactory, NativePluginFactoryContext, Nati
 
 /// Keeps this Plugin's static factory registration linked into a Host binary.
 #[inline(never)]
-pub fn link() -> &'static str {
-    PLUGIN_DESCRIPTOR_JSON
+pub fn link() {
+    std::hint::black_box(PLUGIN_DESCRIPTOR_JSON);
 }
 
 /// Maximum supported logical secret-reference length.

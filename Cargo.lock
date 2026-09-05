@@ -944,7 +944,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-command-plugin"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "futures",
  "lenso",
@@ -959,7 +959,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-encrypted-file-plugin"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "age",
  "futures",
@@ -975,7 +975,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-env-plugin"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "futures",
  "lenso-app-plan",
@@ -988,7 +988,7 @@ dependencies = [
 
 [[package]]
 name = "lenso-secrets-keychain-plugin"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "futures",
  "lenso",
@@ -1001,14 +1001,21 @@ dependencies = [
 ]
 
 [[package]]
-name = "lenso-secrets-link-smoke"
+name = "lenso-secrets-link-set"
 version = "0.0.0"
 dependencies = [
- "lenso-native-adapter",
  "lenso-secrets-command-plugin",
  "lenso-secrets-encrypted-file-plugin",
  "lenso-secrets-env-plugin",
  "lenso-secrets-keychain-plugin",
+]
+
+[[package]]
+name = "lenso-secrets-link-smoke"
+version = "0.0.0"
+dependencies = [
+ "lenso-native-adapter",
+ "lenso-secrets-link-set",
 ]
 
 [[package]]
