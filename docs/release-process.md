@@ -11,17 +11,19 @@ identity as its release-commit proof.
 
 ## Current provider release
 
-The runtime-cohort release publishes in dependency order:
+The native-linkage release publishes in dependency order:
 
 1. `lenso-capability-secrets` 0.1.4
-2. `lenso-secrets-env-plugin` 0.1.4
-3. `lenso-secrets-command-plugin` 0.1.1
-4. `lenso-secrets-encrypted-file-plugin` 0.1.1
-5. `lenso-secrets-keychain-plugin` 0.1.1
+2. `lenso-secrets-env-plugin` 0.1.5
+3. `lenso-secrets-command-plugin` 0.1.2
+4. `lenso-secrets-encrypted-file-plugin` 0.1.2
+5. `lenso-secrets-keychain-plugin` 0.1.2
 
 These versions use App Plan 0.4, Kernel 0.3, Native Adapter 0.3.5, and the
 generated `lenso.secrets@1` descriptor digest. They form one compatibility
-cohort for consumers such as the Agent Host.
+cohort for consumers such as the Agent Host. Each Provider now exports an
+explicit `link()` anchor so Linux Host binaries retain its native inventory
+registration.
 
 Before the first release, allocate each new crate name on crates.io, then
 configure a separate Trusted Publisher for it:
