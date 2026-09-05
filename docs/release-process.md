@@ -5,6 +5,10 @@ Publication is manual-only from reviewed `main` through
 automation. A live run additionally requires `live=true`, the literal
 confirmation `publish`, and `main`.
 
+The commit selected for a live release must come from a reviewed pull request
+whose source branch starts with `release-plz-`; release-plz uses that branch
+identity as its release-commit proof.
+
 ## Current provider release
 
 The runtime-cohort release publishes in dependency order:
